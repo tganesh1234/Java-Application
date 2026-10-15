@@ -1,24 +1,30 @@
 package com.example.demo;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-
 @RestController
 public class HelloController {
 
-	@Value("${app.secret-id}")
-	private String id;
+    private final AwsSecretService awsSecretService;
 
-	@GetMapping("/hello")
-	public String hello() {
-		System.out.println("Secret ID: " + id);
-		return "Spring Boot is running";
-	}
-	@GetMapping("/data")
-	public String getMethodName() {
-		return "id" + id;
-	}
-	
+    public HelloController(AwsSecretService awsSecretService) {
+        this.awsSecretService = awsSecretService;
+    }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Spring Boot is running";
+    }
+
+    @GetMapping("/data")
+    public String getData() {
+        String secret = awsSecretService.getAppSecretId();
+
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException(
+                "AWS Secrets Manager returned an empty secret"
+            );
+        }
+
+        return "Secret retrieved successfully from AWS Secrets Manager";
+    }
 }
