@@ -52,7 +52,7 @@ public class SecurityConfig {
 				// X-Frame-Options: DENY blocks. Drop this along with the console.
 				.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/hello", "/api/auth/**").permitAll()
+						.requestMatchers("/hello","/data", "/api/auth/**").permitAll()
 						// toH2Console() is servlet-path aware and reads
 						// spring.h2.console.path. A plain "/h2-console/**" string becomes
 						// an MvcRequestMatcher, which never matches the H2 servlet.
